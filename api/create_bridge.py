@@ -3,10 +3,14 @@ from ifcopenshell import entity_instance
 
 def create_bridge(file:ifcopenshell.file,nspans:int)->entity_instance:
     """
+    Creates the spatial structure of a bridge based on the BIM for Bridges and Structures TPF 5(372)
     bridge---agg-+-deck
                  +-superstructure---agg---girder
-                 +-substructure---agg-+-pier
-                                      +-foundation
+                 +-substructure  ---agg-+-pier
+                                        +-foundation
+
+    :param nspans: Number of spans
+    :return: IfcBridge
     """
     bridge = file.createIfcBridge(GlobalId=ifcopenshell.guid.new(),Name="Bridge",PredefinedType="GIRDER")
     deck = file.createIfcBridgePart(GlobalId=ifcopenshell.guid.new(),Name="Deck",PredefinedType="DECK",CompositionType="COMPLEX",UsageType="LONGITUDINAL")
