@@ -1,17 +1,20 @@
 import ifcopenshell
 from ifcopenshell import entity_instance
 
-def create_stub_abutment(file:ifcopenshell.file,pier:entity_instance,lf:float,wf:float,hf:float,lw:float,ww:float,hw:float,wall_offset:float,placement:entity_instance):
+def create_stub_abutment(file:ifcopenshell.file,pier:entity_instance,footing_length:float,footing_width:float,footing_height:float,wall_length:float,wall_width:float,wall_height:float,wall_offset:float,placement:entity_instance):
+    """
+    Creates a simply stub abutment.
+    """
     # Build Footing
     profile = file.createIfcRectangleProfileDef(
         ProfileType="AREA",
-        XDim = wf,
-        YDim = lf
+        XDim = footing_width,
+        YDim = footing_length
     )
     solid = file.createIfcExtrudedAreaSolid(
         SweptArea=profile,
         ExtrudedDirection=file.createIfcDirection((0.0,0.0,1.0)),
-        Depth=hf
+        Depth=footing_height
     )
 
     context = ifcopenshell.util.representation.get_context(file, context="Model", subcontext="Axis", target_view="MODEL_VIEW")
@@ -33,16 +36,16 @@ def create_stub_abutment(file:ifcopenshell.file,pier:entity_instance,lf:float,wf
     # Build Wall
     profile = file.createIfcRectangleProfileDef(
         ProfileType="AREA",
-        XDim = ww,
-        YDim = lw
+        XDim = wall_width,
+        YDim = wall_length
     )
     solid = file.createIfcExtrudedAreaSolid(
         SweptArea=profile,
         Position=file.createIfcAxis2Placement3D( # this positions the rectangle to be extruded "wall_offset" from CL Footing and at the top of the footing
-            Location=file.createIfcCartesianPoint((wall_offset,0.0,hf))
+            Location=file.createIfcCartesianPoint((wall_offset,0.0,footing_height))
             ),
         ExtrudedDirection=file.createIfcDirection((0.0,0.0,1.0)),
-        Depth=hw
+        Depth=wall_height
     )
 
     wall = file.createIfcWall(
