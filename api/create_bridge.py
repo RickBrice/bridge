@@ -1,7 +1,9 @@
 import ifcopenshell
+import ifcopenshell.api.spatial
+import ifcopenshell.api.aggregate
 from ifcopenshell import entity_instance
 
-def create_bridge(file:ifcopenshell.file,nspans:int)->entity_instance:
+def create_bridge(file:ifcopenshell.file,site:entity_instance,nspans:int)->entity_instance:
     """
     Creates the spatial structure of a bridge based on the BIM for Bridges and Structures TPF 5(372)
     bridge---agg-+-deck
@@ -32,4 +34,7 @@ def create_bridge(file:ifcopenshell.file,nspans:int)->entity_instance:
 
     ifcopenshell.api.aggregate.assign_object(file,products=piers,relating_object=substructure)
     ifcopenshell.api.aggregate.assign_object(file,products=[deck,superstructure,substructure],relating_object=bridge)
+
+    ifcopenshell.api.aggregate.assign_object(file,products=[bridge],relating_object=site)
+
     return bridge
